@@ -13,6 +13,7 @@
  */
 
 #include "csuit/suit_manifest_print.h"
+#include "inttypes.h"
 
 char* suit_err_to_str(suit_err_t error)
 {
@@ -434,7 +435,7 @@ void suit_print_cose_header_value(QCBORItem *item)
 {
     switch (item->label.uint64) {
     case 1: /* alg */
-        printf("%ld / %s /", item->val.int64, suit_cose_alg_to_str(item->val.int64));
+        printf("%" PRId64 " / %s /", item->val.int64, suit_cose_alg_to_str(item->val.int64));
         break;
     case 4: /* kid */
     case 5: /* IV */
@@ -646,7 +647,7 @@ suit_err_t suit_print_cose_header(QCBORDecodeContext *context,
         if (result != SUIT_SUCCESS) {
             return result;
         }
-        printf("\n%*s/ %s / %ld: ", indent_space + indent_delta, "", suit_cose_protected_key_to_str(item.label.int64), item.label.int64);
+        printf("\n%*s/ %s / %" PRId64 ": ", indent_space + indent_delta, "", suit_cose_protected_key_to_str(item.label.int64), item.label.int64);
         suit_print_cose_header_value(&item);
         if (i + 1 != len) {
             printf(",");
@@ -678,7 +679,7 @@ suit_err_t suit_print_encryption_info(const suit_buf_t *encryption_info,
             return SUIT_ERR_INVALID_TYPE_OF_VALUE;
         }
         for (size_t i = 0; i < Out.uNumUsed; i++) {
-            printf("%ld(", puTags[i]);
+            printf("%" PRIu64 "(", puTags[i]);
         }
         printf("[\n");
         size_t cose_struct_len = item.val.uCount;
@@ -779,7 +780,7 @@ suit_err_t suit_print_version(const suit_version_match_t *version_match,
     printf("%*s/ comparison-type / %d / %s /,\n", indent_space + indent_delta, "", version_match->type, suit_version_comparison_type_to_str(version_match->type));
     printf("%*s/ comparison-value / [", indent_space + indent_delta, "");
     for (size_t j = 0; j < version_match->value.len; j++) {
-        printf(" %ld", version_match->value.int64[j]);
+        printf(" %" PRId64, version_match->value.int64[j]);
         if (j + 1 != version_match->value.len) {
             printf(",");
         }
@@ -903,7 +904,7 @@ suit_err_t suit_print_signature(const suit_buf_t *signature,
         if (item.uDataType != QCBOR_TYPE_ARRAY) {
             return SUIT_ERR_INVALID_TYPE_OF_VALUE;
         }
-        printf("%ld([\n", puTags[0]);
+        printf("%" PRIu64 "([\n", puTags[0]);
 
         printf("%*s/ protected: / << ", indent_space + indent_delta, "");
         QCBORDecode_EnterBstrWrapped(&context, QCBOR_TAG_REQUIREMENT_NOT_A_TAG, NULL);
@@ -976,7 +977,7 @@ suit_err_t suit_print_suit_parameters_list(const suit_parameters_list_t *params_
         switch (params_list->params[i].label) {
         /* int64 */
         case SUIT_PARAMETER_UPDATE_PRIORITY:
-            printf("%ld", params_list->params[i].value.int64);
+            printf("%" PRId64, params_list->params[i].value.int64);
             break;
 
         /* uint64 */
@@ -985,7 +986,7 @@ suit_err_t suit_print_suit_parameters_list(const suit_parameters_list_t *params_
         case SUIT_PARAMETER_SOURCE_COMPONENT:
         case SUIT_PARAMETER_USE_BEFORE:
         case SUIT_PARAMETER_MINIMUM_BATTERY:
-            printf("%lu", params_list->params[i].value.uint64);
+            printf("%" PRIu64, params_list->params[i].value.uint64);
             break;
 
         /* tstr */
@@ -1110,7 +1111,7 @@ suit_err_t suit_print_cmd_seq(const suit_decode_mode_t mode,
         /* in draft-ietf-suit-trust-domains */
         case SUIT_DIRECTIVE_PROCESS_DEPENDENCY:
         case SUIT_DIRECTIVE_UNLINK:
-            printf("%lu", cmd_seq->commands[i].value.uint64);
+            printf("%" PRIu64, cmd_seq->commands[i].value.uint64);
             break;
 
         /* SUIT_Command_Sequence */
@@ -1191,7 +1192,7 @@ suit_err_t suit_print_cmd_seq(const suit_decode_mode_t mode,
             while (1) {
                 printf("%*s/ src-index / %u: [", indent_space + indent_delta, "", cmd_seq->commands[i].value.copy_params.src_index);
                 for (size_t j = 0; j < cmd_seq->commands[i].value.copy_params.int64s.len; j++) {
-                    printf(" %ld", cmd_seq->commands[i].value.copy_params.int64s.int64[j]);
+                    printf(" %" PRId64, cmd_seq->commands[i].value.copy_params.int64s.int64[j]);
                     if (j + 1 != cmd_seq->commands[i].value.copy_params.int64s.len) {
                         printf(",");
                     }
@@ -1918,7 +1919,7 @@ suit_err_t suit_print_invoke(suit_invoke_args_t invoke_args)
     printf("  component-identifier : ");
     suit_print_component_identifier(&invoke_args.component_identifier);
     printf("\n");
-    printf("  argument(len=%ld) : ", invoke_args.args_len);
+    printf("  argument(len=%zu) : ", invoke_args.args_len);
     suit_print_hex(invoke_args.args, invoke_args.args_len);
     printf("\n");
     printf("  suit_rep_policy_t : RecPass%x RecFail%x SysPass%x SysFail%x\n", invoke_args.report.record_on_success, invoke_args.report.record_on_failure, invoke_args.report.sysinfo_success, invoke_args.report.sysinfo_failure);
@@ -1962,7 +1963,7 @@ suit_err_t suit_print_store(suit_store_args_t store_args)
     suit_print_hex(store_args.fetch_args.ptr, store_args.fetch_args.len);
     printf("\n");
 
-    printf("  ptr : %p (%ld)\n", store_args.src_buf.ptr, store_args.src_buf.len);
+    printf("  ptr : %p (%zu)\n", store_args.src_buf.ptr, store_args.src_buf.len);
     printf("  suit_rep_policy_t : RecPass%x RecFail%x SysPass%x SysFail%x\n", store_args.report.record_on_success, store_args.report.record_on_failure, store_args.report.sysinfo_success, store_args.report.sysinfo_failure);
     printf("}\n\n");
     return ret;
@@ -1977,7 +1978,7 @@ suit_err_t suit_print_fetch(suit_fetch_args_t fetch_args,
     printf("fetch callback : {\n");
     printf("  uri : ");
     suit_print_tstr_in_max(fetch_args.uri, fetch_args.uri_len, SUIT_MAX_PRINT_URI_COUNT);
-    printf(" (%ld)\n", fetch_args.uri_len);
+    printf(" (%zu)\n", fetch_args.uri_len);
     printf("  fetch-args : ");
     suit_print_hex(fetch_args.args.ptr, fetch_args.args.len);
     printf("\n");
@@ -1985,7 +1986,7 @@ suit_err_t suit_print_fetch(suit_fetch_args_t fetch_args,
     suit_print_component_identifier(&fetch_args.dst);
     printf("\n");
 
-    printf("  fetch buf : %p(%ld)\n", fetch_args.ptr, fetch_args.buf_len);
+    printf("  fetch buf : %p(%zu)\n", fetch_args.ptr, fetch_args.buf_len);
     printf("  suit_rep_policy_t : RecPass%x RecFail%x SysPass%x SysFail%x\n", fetch_args.report.record_on_success, fetch_args.report.record_on_failure, fetch_args.report.sysinfo_success, fetch_args.report.sysinfo_failure);
     printf("}\n\n");
 
@@ -2015,14 +2016,14 @@ suit_err_t suit_print_condition(suit_condition_args_t condition_args)
     switch (condition_args.condition) {
     /* int64 */
     case SUIT_CONDITION_UPDATE_AUTHORIZED:
-        printf("%ld\n", condition_args.expected.i64);
+        printf("%" PRId64 "\n", condition_args.expected.i64);
         break;
 
     /* uint64 */
     case SUIT_CONDITION_COMPONENT_SLOT:
     case SUIT_CONDITION_USE_BEFORE:
     case SUIT_CONDITION_MINIMUM_BATTERY:
-        printf("%lu\n", condition_args.expected.u64);
+        printf("%" PRIu64 "\n", condition_args.expected.u64);
         break;
 
     /* bstr */
@@ -2037,7 +2038,7 @@ suit_err_t suit_print_condition(suit_condition_args_t condition_args)
     /* uint64 image_size and suit-digest */
     case SUIT_CONDITION_IMAGE_MATCH:
     case SUIT_CONDITION_IMAGE_NOT_MATCH:
-        printf("{\n    image_size : %lu\n    image_digest : ", condition_args.expected.image_size);
+        printf("{\n    image_size : %" PRIu64 "\n    image_digest : ", condition_args.expected.image_size);
         suit_print_digest(&condition_args.expected.image_digest, 2, 2);
         printf("\n");
         break;
