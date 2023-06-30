@@ -803,21 +803,21 @@ suit_err_t suit_print_wait_event(const suit_wait_event_t *wait_event,
         if (comma) {
             printf(",\n");
         }
-        printf("%*s/ authorization / 1: %ld", INDENTATION(1), "", wait_event->authorization);
+        printf("%*s/ authorization / 1: %" PRId64, INDENTATION(1), "", wait_event->authorization);
         comma = true;
     }
     if (wait_event->exists & SUIT_WAIT_EVENT_CONTAINS_POWER) {
         if (comma) {
             printf(",\n");
         }
-        printf("%*s/ power / 2: %ld", INDENTATION(1), "", wait_event->power);
+        printf("%*s/ power / 2: %" PRId64, INDENTATION(1), "", wait_event->power);
         comma = true;
     }
     if (wait_event->exists & SUIT_WAIT_EVENT_CONTAINS_NETWORK) {
         if (comma) {
             printf(",\n");
         }
-        printf("%*s/ network / 3: %ld", INDENTATION(1), "", wait_event->network);
+        printf("%*s/ network / 3: %" PRId64, INDENTATION(1), "", wait_event->network);
         comma = true;
     }
     if (wait_event->exists & SUIT_WAIT_EVENT_CONTAINS_OTHER_DEVICE_VERSION) {
@@ -844,21 +844,21 @@ suit_err_t suit_print_wait_event(const suit_wait_event_t *wait_event,
         if (comma) {
             printf(",\n");
         }
-        printf("%*s/ time / 5: %lu", INDENTATION(1), "", wait_event->time);
+        printf("%*s/ time / 5: %" PRIu64, INDENTATION(1), "", wait_event->time);
         comma = true;
     }
     if (wait_event->exists & SUIT_WAIT_EVENT_CONTAINS_TIME_OF_DAY) {
         if (comma) {
             printf(",\n");
         }
-        printf("%*s/ time-of-day / 6: %lu", INDENTATION(1), "", wait_event->time_of_day);
+        printf("%*s/ time-of-day / 6: %" PRIu64, INDENTATION(1), "", wait_event->time_of_day);
         comma = true;
     }
     if (wait_event->exists & SUIT_WAIT_EVENT_CONTAINS_DAY_OF_WEEK) {
         if (comma) {
             printf(",\n");
         }
-        printf("%*s/ day-of-week / 7: %lu", INDENTATION(1), "", wait_event->day_of_week);
+        printf("%*s/ day-of-week / 7: %" PRIu64, INDENTATION(1), "", wait_event->day_of_week);
         comma = true;
     }
     printf("\n%*s} ", INDENTATION(0), "");
@@ -975,7 +975,7 @@ suit_err_t suit_print_suit_parameters_list(const suit_parameters_list_t *params_
 {
     suit_err_t result = SUIT_SUCCESS;
     for (size_t i = 0; i < params_list->len; i++) {
-        printf("%*s/ %s / %ld: ", INDENTATION(0), "", suit_parameter_key_to_str(params_list->params[i].label), params_list->params[i].label);
+        printf("%*s/ %s / %" PRId64 ": ", INDENTATION(0), "", suit_parameter_key_to_str(params_list->params[i].label), params_list->params[i].label);
         switch (params_list->params[i].label) {
         /* int64 */
         case SUIT_PARAMETER_UPDATE_PRIORITY:
@@ -1079,7 +1079,7 @@ suit_err_t suit_print_cmd_seq(const suit_decode_mode_t mode,
     suit_err_t result = SUIT_SUCCESS;
     suit_command_sequence_t tmp_cmd_seq;
     for (size_t i = 0; i < cmd_seq->len; i++) {
-        printf("%*s/ %s / %ld, ", INDENTATION(0), "", suit_command_sequence_key_to_str(cmd_seq->commands[i].label), cmd_seq->commands[i].label);
+        printf("%*s/ %s / %" PRId64 ", ", INDENTATION(0), "", suit_command_sequence_key_to_str(cmd_seq->commands[i].label), cmd_seq->commands[i].label);
         switch (cmd_seq->commands[i].label) {
         /* SUIT_Rep_Policy */
         case SUIT_CONDITION_VENDOR_IDENTIFIER:
@@ -1503,8 +1503,8 @@ suit_err_t suit_print_manifest(const suit_decode_mode_t mode,
     }
     suit_err_t result = SUIT_SUCCESS;
     printf("%*s/ manifest(%s) / 3: << {\n", INDENTATION(0), "", suit_str_verified(manifest->is_verified));
-    printf("%*s/ manifest-version / 1: %lu,\n", INDENTATION(1), "", manifest->version);
-    printf("%*s/ manifest-sequence-number / 2: %lu,\n", INDENTATION(1), "", manifest->sequence_number);
+    printf("%*s/ manifest-version / 1: %" PRIu64 ",\n", INDENTATION(1), "", manifest->version);
+    printf("%*s/ manifest-sequence-number / 2: %" PRIu64 ",\n", INDENTATION(1), "", manifest->sequence_number);
 
     printf("%*s/ common / 3: << {\n", INDENTATION(1), "");
     bool comma = false;
