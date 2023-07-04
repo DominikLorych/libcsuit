@@ -13,7 +13,6 @@ if(BUILD_LIBCSUIT_LIB)
 
 	find_package(t_cose REQUIRED)
 	find_package(MbedTLS REQUIRED)
-	add_definitions(-DLIBCSUIT_PSA_CRYPTO_C=1)
 	find_package(QCBOR REQUIRED)
 
 	set(SOURCE_LIBRARY
@@ -29,6 +28,7 @@ if(BUILD_LIBCSUIT_LIB)
 	add_library(libcsuit ${SOURCE_LIBRARY})
 	target_include_directories(libcsuit PUBLIC inc)
 	target_link_libraries(libcsuit ${CRYPTO_LIBRARIES} ${QCBOR_LIBRARY} ${T_COSE_LIBRARY})
+	target_compile_definitions(libcsuit PUBLIC LIBCSUIT_PSA_CRYPTO_C)
 endif()
 
 if(BUILD_EXAMPLES)
@@ -57,10 +57,7 @@ if(BUILD_EXAMPLES)
 		endif()
 
 		add_subdirectory(../mbedtls mbedtls)
-		#add_definitions(-DMBEDTLS=1)
-
-		# Compile code for use with the PSA Crypto API
-		add_definitions(-DLIBCSUIT_PSA_CRYPTO_C=1)
+		add_definitions(-DMBEDTLS=1)
 
 	else()
 
@@ -119,4 +116,12 @@ if(BUILD_EXAMPLES)
 	target_link_options(suit_manifest_process_main PRIVATE "LINKER:--wrap=suit_invoke_callback")
 	target_link_options(suit_manifest_process_main PRIVATE "LINKER:--wrap=suit_condition_callback")
 	target_link_libraries(suit_manifest_process_main ${CRYPTO_LIBRARIES} ${QCBOR_LIBRARY} ${T_COSE_LIBRARY} -lm)
+
+	if(MBEDTLS)
+		# Compile code for use with the PSA Crypto API
+		# Use target_compile_definitions because for some reason add_compile_definitions and add_definitions do not work properly when libcsuit is a subdirectory
+		target_compile_definitions(suit_manifest_parser_main PUBLIC LIBCSUIT_PSA_CRYPTO_C)
+		target_compile_definitions(suit_manifest_encode_main PUBLIC LIBCSUIT_PSA_CRYPTO_C)
+		target_compile_definitions(suit_manifest_process_main PUBLIC LIBCSUIT_PSA_CRYPTO_C)
+	endif()
 endif()
