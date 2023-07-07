@@ -951,7 +951,7 @@ suit_err_t suit_decode_dependencies_from_item(const suit_decode_mode_t mode,
         if (result != SUIT_SUCCESS) {
             return result;
         }
-        if (dependencies->len >= SUIT_MAX_ARRAY_LENGTH) {
+        if (dependencies->len >= SUIT_MAX_DEPENDENCY_NUM) {
             return SUIT_ERR_NO_MEMORY;
         }
         suit_dependency_t *dependency = &dependencies->dependency[dependencies->len];
@@ -1546,7 +1546,7 @@ suit_err_t suit_decode_delegation_from_item(QCBORDecodeContext *context,
     if (result != SUIT_SUCCESS) {
         return result;
     }
-    if (item->val.uCount >= SUIT_MAX_ARRAY_LENGTH) {
+    if (item->val.uCount >= SUIT_MAX_KEY_NUM) {
         return SUIT_ERR_NO_MEMORY;
     }
     delegation->delegation_chain_num = item->val.uCount;

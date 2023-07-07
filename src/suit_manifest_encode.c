@@ -1165,7 +1165,7 @@ suit_err_t suit_encode_envelope(const suit_decode_mode_t mode,
         return result;
     }
 
-    UsefulBuf signatures[SUIT_MAX_ARRAY_LENGTH] = {0};
+    UsefulBuf signatures[SUIT_MAX_KEY_NUM] = {0};
     size_t num_signatures = 0;
     for (size_t i = 0; i < SUIT_MAX_KEY_NUM; i++) {
         if (mechanisms[i].use == false) {
