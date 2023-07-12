@@ -755,7 +755,7 @@ typedef struct suit_record {
     suit_parameters_list_t          parameters;
 } suit_record_t;
 
-typedef struct suit_report_recoreds {
+typedef struct suit_report_records {
     size_t          len;
     suit_record_t   suit_records[SUIT_MAX_ARRAY_LENGTH];
 } suit_report_records_t;
