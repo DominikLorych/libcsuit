@@ -87,7 +87,7 @@ typedef union {
 #define SUIT_DECODE_MODE_SKIP_ANY_ERROR ((suit_decode_mode_t){(uint8_t)UINT8_MAX})
 
 #ifndef SUIT_MAX_ARRAY_LENGTH
-#define SUIT_MAX_ARRAY_LENGTH           20
+#define SUIT_MAX_ARRAY_LENGTH           8
 #endif
 
 #ifndef SUIT_MAX_KEY_NUM
@@ -103,7 +103,7 @@ typedef union {
 #endif
 
 #ifndef SUIT_MAX_COMPONENT_NUM
-#define SUIT_MAX_COMPONENT_NUM          3
+#define SUIT_MAX_COMPONENT_NUM          2
 #endif
 
 #ifndef SUIT_MAX_DEPENDENCY_NUM
@@ -117,7 +117,7 @@ typedef union {
 #endif
 
 #ifndef SUIT_MAX_DATA_SIZE
-#define SUIT_MAX_DATA_SIZE              (8 * 1024 * 1024)
+#define SUIT_MAX_DATA_SIZE              (128 * 1024)
 #endif
 
 typedef enum cbor_tag_key {
