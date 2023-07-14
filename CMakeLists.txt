@@ -4,7 +4,7 @@ project(libcsuit
 	LANGUAGES C
 	VERSION 1.0.0)
 
-set(CMAKE_C_FLAGS "-Wall -O3 -pedantic")
+set(CMAKE_C_FLAGS "-Wall -O3")
 set(CMAKE_C_FLAGS_DEBUG "-Wall -O0 -g -DDEBUG") # use `-DCMAKE_BUILD_TYPE=Debug'
 
 if(BUILD_LIBCSUIT_LIB)
@@ -32,9 +32,15 @@ if(BUILD_LIBCSUIT_LIB)
 endif()
 
 if(BUILD_EXAMPLES)
-	option(QCBOR_LIBRARY "QCBOR Library Identifier" "/usr/local/lib/libqcbor.a")
-	set(T_COSE_LIBRARY "t_cose Library Identifier" "t_cose")
-	add_subdirectory(../t_cose t_cose)
+	set(CRYPTO_PROVIDER "MbedTLS")
+	set(MBEDTLS ON)
+	set(CRYPTO_PROVIDER "MbedTLS")
+	set(CRYPTO_LIBRARY "mbedtls")
+	set(QCBOR_LIBRARY "qcbor")
+	set(T_COSE_LIBRARY "t_cose")
+	#add_subdirectory(../t_cose t_cose)
+
+
 
 	if(MBEDTLS)
 
@@ -47,7 +53,7 @@ if(BUILD_EXAMPLES)
 		set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/lib)
 
 		# Use custom config file for Mbed TLS
-		add_definitions(-DMBEDTLS_CONFIG_FILE="${CMAKE_CURRENT_LIST_DIR}/mbedtls_config.h")
+		add_definitions(-DMBEDTLS_CONFIG_FILE="${CMAKE_CURRENT_LIST_DIR}/misc/config/mbedtls_config.h")
 
 		option(USE_STATIC_MBEDTLS_LIBRARY "Build mbed TLS static library." off)
 		option(USE_SHARED_MBEDTLS_LIBRARY "Build mbed TLS shared library." on)
@@ -56,7 +62,7 @@ if(BUILD_EXAMPLES)
 			option(LINK_WITH_PTHREAD "Explicitly link mbed TLS library to pthread." on)
 		endif()
 
-		add_subdirectory(../mbedtls mbedtls)
+		#add_subdirectory(../mbedtls mbedtls)
 		add_definitions(-DMBEDTLS=1)
 
 	else()
@@ -64,6 +70,24 @@ if(BUILD_EXAMPLES)
 		set(CRYPTO_LIBRARIES "crypto")
 
 	endif()
+
+	include(FetchContent)
+	FetchContent_Declare(
+			MbedTLS
+			SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../mbedtls/"
+			OVERRIDE_FIND_PACKAGE
+	)
+	FetchContent_Declare(
+			qcbor
+			SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../QCBOR/"
+			OVERRIDE_FIND_PACKAGE
+	)
+	FetchContent_Declare(
+			t_cose
+			SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../t_cose/"
+			OVERRIDE_FIND_PACKAGE
+	)
+	FetchContent_MakeAvailable(Mbedtls QCBOR t_cose)
 
 	set(SOURCE_DECODE
 			src/suit_common.c
